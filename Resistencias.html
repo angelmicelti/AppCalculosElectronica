@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Circuitos con Resistencias</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-active {
+            background-color: #f59e0b; /* bg-amber-500 */
+            color: white;
+        }
+        .tab-inactive {
+            background-color: #e5e7eb; /* bg-gray-200 */
+            color: #374151; /* text-gray-700 */
+        }
+        .dark .tab-inactive {
+            background-color: #374151; /* dark:bg-gray-700 */
+            color: #d1d5db; /* dark:text-gray-300 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white text-center mb-6">Calculadora de Resistencias</h1>
+
+        <!-- Pestañas de Selección de Circuito -->
+        <div class="flex justify-center mb-6 rounded-lg p-1 bg-gray-200 dark:bg-gray-700">
+            <button id="tab-serie" class="w-full py-2 px-4 rounded-md text-sm md:text-base font-semibold transition-colors duration-300">Serie</button>
+            <button id="tab-paralelo" class="w-full py-2 px-4 rounded-md text-sm md:text-base font-semibold transition-colors duration-300">Paralelo</button>
+            <button id="tab-mixto" class="w-full py-2 px-4 rounded-md text-sm md:text-base font-semibold transition-colors duration-300">Mixto</button>
+        </div>
+
+        <!-- Contenedor para los cálculos -->
+        <div>
+            <!-- Resistencias en Serie -->
+            <div id="calc-serie">
+                <div class="space-y-4 w-full">
+                    <div>
+                        <label for="r-serie" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Valores de las resistencias (Ω)</label>
+                        <textarea id="r-serie" rows="3" class="w-full p-2 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500" placeholder="Ej: 100, 220, 470"></textarea>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Introduce los valores separados por comas.</p>
+                    </div>
+                    <button id="btn-calc-serie" class="w-full bg-amber-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-amber-600 transition duration-300 shadow-md">Calcular Resistencia Total</button>
+                </div>
+                <!-- Resultados para el circuito en serie -->
+                <div id="result-serie" class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg text-center min-h-[5rem] flex items-center justify-center">
+                    <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Calcular".</p>
+                </div>
+            </div>
+
+            <!-- Resistencias en Paralelo -->
+            <div id="calc-paralelo" class="hidden">
+                 <div class="space-y-4 w-full">
+                    <div>
+                        <label for="r-paralelo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Valores de las resistencias (Ω)</label>
+                        <textarea id="r-paralelo" rows="3" class="w-full p-2 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500" placeholder="Ej: 100, 220, 470"></textarea>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Introduce los valores separados por comas.</p>
+                    </div>
+                    <button id="btn-calc-paralelo" class="w-full bg-amber-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-amber-600 transition duration-300 shadow-md">Calcular Resistencia Total</button>
+                </div>
+                <!-- Resultados para el circuito en paralelo -->
+                <div id="result-paralelo" class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg text-center min-h-[5rem] flex items-center justify-center">
+                    <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Calcular".</p>
+                </div>
+            </div>
+            
+            <!-- Asociación Mixta -->
+            <div id="calc-mixto" class="hidden">
+                 <div class="space-y-4 w-full">
+                    <div>
+                        <label for="r-mixto" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Asociación de resistencias (Ω)</label>
+                        <textarea id="r-mixto" rows="3" class="w-full p-2 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500" placeholder="Ej: 100, (220, 470), 1000"></textarea>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            <span class="font-semibold">Leyenda:</span> Usa paréntesis <b>()</b> para agrupar resistencias en <b>paralelo</b>. Los valores separados por comas se consideran en <b>serie</b>.
+                        </p>
+                    </div>
+                    <button id="btn-calc-mixto" class="w-full bg-amber-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-amber-600 transition duration-300 shadow-md">Calcular Resistencia Total</button>
+                </div>
+                <!-- Resultados para la asociación mixta -->
+                <div id="result-mixto" class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg text-center min-h-[5rem] flex items-center justify-center">
+                    <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Calcular".</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Elementos del DOM ---
+            const tabSerie = document.getElementById('tab-serie');
+            const tabParalelo = document.getElementById('tab-paralelo');
+            const tabMixto = document.getElementById('tab-mixto');
+            const calcSerieDiv = document.getElementById('calc-serie');
+            const calcParaleloDiv = document.getElementById('calc-paralelo');
+            const calcMixtoDiv = document.getElementById('calc-mixto');
+
+            const rSerieInput = document.getElementById('r-serie');
+            const btnCalcSerie = document.getElementById('btn-calc-serie');
+            const resultSerieDiv = document.getElementById('result-serie');
+
+            const rParaleloInput = document.getElementById('r-paralelo');
+            const btnCalcParalelo = document.getElementById('btn-calc-paralelo');
+            const resultParaleloDiv = document.getElementById('result-paralelo');
+            
+            const rMixtoInput = document.getElementById('r-mixto');
+            const btnCalcMixto = document.getElementById('btn-calc-mixto');
+            const resultMixtoDiv = document.getElementById('result-mixto');
+            
+            // --- Lógica de las Pestañas ---
+            function switchTab(activeTab) {
+                const tabs = { serie: tabSerie, paralelo: tabParalelo, mixto: tabMixto };
+                const divs = { serie: calcSerieDiv, paralelo: calcParaleloDiv, mixto: calcMixtoDiv };
+
+                for (const key in tabs) {
+                    if (key === activeTab) {
+                        tabs[key].classList.add('tab-active');
+                        tabs[key].classList.remove('tab-inactive');
+                        divs[key].style.display = 'block';
+                    } else {
+                        tabs[key].classList.add('tab-inactive');
+                        tabs[key].classList.remove('tab-active');
+                        divs[key].style.display = 'none';
+                    }
+                }
+            }
+
+            tabSerie.addEventListener('click', () => switchTab('serie'));
+            tabParalelo.addEventListener('click', () => switchTab('paralelo'));
+            tabMixto.addEventListener('click', () => switchTab('mixto'));
+
+            // Iniciar en la pestaña "Serie" por defecto
+            switchTab('serie');
+
+            // --- Funciones de Utilidad ---
+            function parseInput(inputString) {
+                if (!inputString.trim()) return [];
+                const values = inputString.split(',')
+                    .map(v => parseFloat(v.trim()))
+                    .filter(v => !isNaN(v) && v > 0);
+                return values;
+            }
+
+            // --- Lógica de Cálculo ---
+
+            // Cálculo para resistencias en SERIE
+            btnCalcSerie.addEventListener('click', () => {
+                const values = parseInput(rSerieInput.value);
+                if (values.length === 0) {
+                    resultSerieDiv.innerHTML = `<p class="text-red-500 font-semibold">Por favor, introduce valores numéricos válidos y positivos.</p>`;
+                    return;
+                }
+                
+                // Fórmula: Rt = R1 + R2 + ...
+                const totalResistance = values.reduce((sum, val) => sum + val, 0);
+
+                resultSerieDiv.innerHTML = `
+                    <div class="text-center text-amber-700 dark:text-amber-300">
+                        <p class="font-bold">Resistencia Total (Serie)</p>
+                        <p class="mt-2 font-semibold text-lg">R<sub class="text-xs">T</sub> = ${totalResistance.toFixed(2)} Ω</p>
+                    </div>
+                `;
+            });
+
+            // Cálculo para resistencias en PARALELO
+            btnCalcParalelo.addEventListener('click', () => {
+                const values = parseInput(rParaleloInput.value);
+                if (values.length === 0) {
+                    resultParaleloDiv.innerHTML = `<p class="text-red-500 font-semibold">Por favor, introduce valores numéricos válidos y positivos.</p>`;
+                    return;
+                }
+                
+                // Fórmula: 1/Rt = 1/R1 + 1/R2 + ...
+                const sumOfReciprocals = values.reduce((sum, val) => sum + (1 / val), 0);
+                const totalResistance = 1 / sumOfReciprocals;
+
+                resultParaleloDiv.innerHTML = `
+                    <div class="text-center text-amber-700 dark:text-amber-300">
+                        <p class="font-bold">Resistencia Total (Paralelo)</p>
+                        <p class="mt-2 font-semibold text-lg">R<sub class="text-xs">T</sub> = ${totalResistance.toFixed(2)} Ω</p>
+                    </div>
+                `;
+            });
+
+            // Cálculo para asociación MIXTA
+            btnCalcMixto.addEventListener('click', () => {
+                let expression = rMixtoInput.value.trim();
+                if (!expression) {
+                    resultMixtoDiv.innerHTML = `<p class="text-red-500 font-semibold">El campo no puede estar vacío.</p>`;
+                    return;
+                }
+
+                try {
+                    // Regex para encontrar el grupo entre paréntesis más interno
+                    const innerGroupRegex = /\(([^()]+)\)/;
+                    let match;
+
+                    // Resolver todos los grupos paralelos (dentro de paréntesis) primero
+                    while ((match = innerGroupRegex.exec(expression)) !== null) {
+                        const groupContent = match[1];
+                        const parallelValues = parseInput(groupContent);
+                        if (parallelValues.length === 0) {
+                             throw new Error(`Grupo paralelo inválido: "${match[0]}"`);
+                        }
+                        const sumOfReciprocals = parallelValues.reduce((sum, val) => sum + (1 / val), 0);
+                        const parallelResult = 1 / sumOfReciprocals;
+                        expression = expression.replace(match[0], parallelResult.toString());
+                    }
+
+                    // Después de resolver los grupos paralelos, lo que queda es una asociación en serie
+                    const seriesValues = parseInput(expression);
+                     if (seriesValues.length === 0) {
+                        throw new Error("No se encontraron valores válidos para el cálculo en serie final.");
+                    }
+
+                    const totalResistance = seriesValues.reduce((sum, val) => sum + val, 0);
+
+                    if (isNaN(totalResistance) || !isFinite(totalResistance)) {
+                        throw new Error("El resultado del cálculo no es un número válido.");
+                    }
+
+                    resultMixtoDiv.innerHTML = `
+                        <div class="text-center text-amber-700 dark:text-amber-300">
+                            <p class="font-bold">Resistencia Total (Mixta)</p>
+                            <p class="mt-2 font-semibold text-lg">R<sub class="text-xs">T</sub> = ${totalResistance.toFixed(2)} Ω</p>
+                        </div>
+                    `;
+
+                } catch (error) {
+                    resultMixtoDiv.innerHTML = `<p class="text-red-500 font-semibold">Error de sintaxis o cálculo. Revisa la expresión. ${error.message}</p>`;
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
