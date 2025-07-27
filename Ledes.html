@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Resistencia de polarización para ledes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* --- Estilos para el menú desplegable personalizado --- */
+        .custom-select-container {
+            position: relative;
+        }
+        .custom-select-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            margin-top: 0.25rem;
+            z-index: 10;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .dark .custom-select-options {
+            background-color: #1f2937;
+            border-color: #4b5563;
+        }
+        .custom-option {
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            transition: filter 0.2s;
+        }
+        .custom-option:hover {
+            filter: brightness(95%);
+        }
+        .dark .custom-option:hover {
+            filter: brightness(120%);
+        }
+
+        /* --- Clases para resaltar el fondo de cada OPCIÓN (Colores Intensos) --- */
+        .option-amarillo { background-color: #FDE68A; color: #1f2937; }
+        .option-azul { background-color: #BFDBFE; color: #1f2937; }
+        .option-blanco { background-color: #E5E7EB; color: #1f2937; }
+        .option-infrarrojo { background-color: #FECACA; color: #1f2937; }
+        .option-naranja { background-color: #FED7AA; color: #1f2937; }
+        .option-rosa { background-color: #FBCFE8; color: #1f2937; }
+        .option-rojo { background-color: #FECACA; color: #1f2937; }
+        .option-ultravioleta { background-color: #DDD6FE; color: #1f2937; }
+        .option-verde { background-color: #BBF7D0; color: #1f2937; }
+        .option-verde-brillante { background-color: #D9F99D; color: #1f2937; }
+        .option-violeta { background-color: #E9D5FF; color: #1f2937; }
+
+        .dark .option-amarillo { background-color: #B45309; color: #f3f4f6; }
+        .dark .option-azul { background-color: #1D4ED8; color: #f3f4f6; }
+        .dark .option-blanco { background-color: #4B5563; color: #f3f4f6; }
+        .dark .option-infrarrojo { background-color: #B91C1C; color: #f3f4f6; }
+        .dark .option-naranja { background-color: #C2410C; color: #f3f4f6; }
+        .dark .option-rosa { background-color: #BE185D; color: #f3f4f6; }
+        .dark .option-rojo { background-color: #B91C1C; color: #f3f4f6; }
+        .dark .option-ultravioleta { background-color: #6D28D9; color: #f3f4f6; }
+        .dark .option-verde { background-color: #15803D; color: #f3f4f6; }
+        .dark .option-verde-brillante { background-color: #65A30D; color: #f3f4f6; }
+        .dark .option-violeta { background-color: #86198F; color: #f3f4f6; }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white text-center mb-6">Calculadora de Resistencia para LED</h1>
+
+        <div class="space-y-4">
+            <div>
+                <label for="vcc" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tensión de Alimentación (Vcc)</label>
+                <input type="number" id="vcc" value="5" step="0.1" class="w-full p-2 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <!-- Menú desplegable personalizado -->
+            <div class="custom-select-container">
+                <label for="led-type-display" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Color del LED</label>
+                <!-- El select real estará oculto, lo usamos para el cálculo -->
+                <select id="led-type" class="hidden">
+                    <option value="2.0" data-color="amarillo">Amarillo (~2.0V)</option>
+                    <option value="3.3" data-color="azul">Azul (~3.3V)</option>
+                    <option value="3.3" data-color="blanco">Blanco Brillante (~3.3V)</option>
+                    <option value="1.4" data-color="infrarrojo">Infrarrojo (~1.4V)</option>
+                    <option value="2.0" data-color="naranja">Naranja (~2.0V)</option>
+                    <option value="3.3" data-color="rosa">Rosa (~3.3V)</option>
+                    <option value="1.9" data-color="rojo" selected>Rojo (~1.9V)</option>
+                    <option value="3.6" data-color="ultravioleta">Ultravioleta (~3.6V)</option>
+                    <option value="2.1" data-color="verde">Verde (~2.1V)</option>
+                    <option value="3.2" data-color="verde-brillante">Verde Brillante (~3.2V)</option>
+                    <option value="3.2" data-color="violeta">Violeta (~3.2V)</option>
+                </select>
+                <!-- Este es el elemento visible que simula el select -->
+                <div id="led-type-display" class="w-full p-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm font-medium cursor-pointer flex justify-between items-center">
+                    <span></span>
+                    <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                </div>
+                <!-- Aquí se mostrarán las opciones -->
+                <div id="custom-options" class="custom-select-options hidden"></div>
+            </div>
+
+            <div>
+                <label for="if" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Corriente del LED (mA)</label>
+                <input type="number" id="if" value="20" class="w-full p-2 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <button id="btn-calc" class="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300 shadow-md">Calcular Resistencia</button>
+        </div>
+
+        <!-- Resultados -->
+        <div id="result" class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg text-center min-h-[6rem] flex items-center justify-center">
+            <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Calcular".</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Elementos del DOM ---
+            const vccInput = document.getElementById('vcc');
+            const nativeSelect = document.getElementById('led-type');
+            const displaySelect = document.getElementById('led-type-display');
+            const displaySelectText = displaySelect.querySelector('span');
+            const customOptionsContainer = document.getElementById('custom-options');
+            const ifInput = document.getElementById('if');
+            const btnCalc = document.getElementById('btn-calc');
+            const resultDiv = document.getElementById('result');
+
+            const colorClassMap = {
+                'amarillo': 'option-amarillo', 'azul': 'option-azul', 'blanco': 'option-blanco',
+                'infrarrojo': 'option-infrarrojo', 'naranja': 'option-naranja', 'rosa': 'option-rosa',
+                'rojo': 'option-rojo', 'ultravioleta': 'option-ultravioleta', 'verde': 'option-verde',
+                'verde-brillante': 'option-verde-brillante', 'violeta': 'option-violeta'
+            };
+
+            // --- Lógica del Menú Personalizado ---
+            function updateDisplay() {
+                const selectedOption = nativeSelect.options[nativeSelect.selectedIndex];
+                displaySelectText.textContent = selectedOption.textContent;
+            }
+
+            function populateCustomOptions() {
+                customOptionsContainer.innerHTML = '';
+                Array.from(nativeSelect.options).forEach(option => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.textContent = option.textContent;
+                    optionDiv.classList.add('custom-option');
+                    const colorKey = option.dataset.color;
+                    if (colorClassMap[colorKey]) {
+                        optionDiv.classList.add(colorClassMap[colorKey]);
+                    }
+                    optionDiv.dataset.value = option.value;
+                    optionDiv.addEventListener('click', () => {
+                        nativeSelect.value = option.value;
+                        updateDisplay();
+                        customOptionsContainer.classList.add('hidden');
+                    });
+                    customOptionsContainer.appendChild(optionDiv);
+                });
+            }
+
+            displaySelect.addEventListener('click', (e) => {
+                e.stopPropagation();
+                customOptionsContainer.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', () => {
+                if (!customOptionsContainer.classList.contains('hidden')) {
+                    customOptionsContainer.classList.add('hidden');
+                }
+            });
+
+            // Inicializar menú
+            updateDisplay();
+            populateCustomOptions();
+
+            // --- Serie de resistencias estándar E24 ---
+            const e24Series = [
+                1.0, 1.1, 1.2, 1.3, 1.5, 1.6, 1.8, 2.0, 2.2, 2.4, 
+                2.7, 3.0, 3.3, 3.6, 3.9, 4.3, 4.7, 5.1, 5.6, 6.2, 
+                6.8, 7.5, 8.2, 9.1
+            ];
+            
+            function findNearestE24(value) {
+                if (value <= 0) return 0;
+                if (value < 1e-9) return e24Series[0] * Math.pow(10, Math.floor(Math.log10(value)));
+                const magnitude = Math.pow(10, Math.floor(Math.log10(value)));
+                const normalizedValue = value / magnitude;
+                let closest = e24Series.reduce((prev, curr) => 
+                    (Math.abs(curr - normalizedValue) < Math.abs(prev - normalizedValue) ? curr : prev)
+                );
+                let finalValue = closest * magnitude;
+                return Number(finalValue.toPrecision(2));
+            }
+
+            // --- Lógica de Cálculo ---
+            btnCalc.addEventListener('click', () => {
+                const Vcc = parseFloat(vccInput.value);
+                const Vf = parseFloat(nativeSelect.value);
+                const If_mA = parseFloat(ifInput.value);
+
+                if (isNaN(Vcc) || isNaN(Vf) || isNaN(If_mA) || If_mA <= 0) {
+                    resultDiv.innerHTML = `<p class="text-red-500 font-semibold">Por favor, introduce valores numéricos válidos.</p>`;
+                    return;
+                }
+
+                if (Vcc <= Vf) {
+                    resultDiv.innerHTML = `
+                        <div class="text-center text-yellow-700 dark:text-yellow-300">
+                            <p class="font-bold">Voltaje insuficiente</p>
+                            <p>Vcc (${Vcc}V) debe ser mayor que el voltaje del LED (${Vf}V).</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const If_A = If_mA / 1000;
+                const calculatedR = (Vcc - Vf) / If_A;
+                const standardR = findNearestE24(calculatedR);
+
+                resultDiv.innerHTML = `
+                    <div class="text-center text-indigo-800 dark:text-indigo-300">
+                        <p class="font-semibold">Resistencia Calculada:</p>
+                        <p class="font-bold text-xl">${calculatedR.toFixed(2)} Ω</p>
+                        <p class="mt-2 font-semibold">Valor Estándar (E24) recomendado:</p>
+                        <p class="font-bold text-xl text-green-600 dark:text-green-400">${standardR} Ω</p>
+                    </div>
+                `;
+            });
+        });
+    </script>
+
+</body>
+</html>
