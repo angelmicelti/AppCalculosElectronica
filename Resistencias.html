@@ -1,764 +1,522 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Circuitos con Resistencias</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(to bottom, #fef3c7, #fffbeb);
-        }
-        .dark body {
-            background: linear-gradient(to bottom, #1e293b, #0f172a);
-        }
-        .tab-active {
-            background-color: #f59e0b;
-            color: white;
-        }
-        .tab-inactive {
-            background-color: #e5e7eb;
-            color: #374151;
-        }
-        .dark .tab-inactive {
-            background-color: #374151;
-            color: #d1d5db;
-        }
-        .diagram-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 20px 0;
-            padding: 15px;
-            background: #fffdf4;
-            border-radius: 12px;
-            border: 1px solid #fde68a;
-        }
-        .dark .diagram-container {
-            background: #1e293b;
-            border-color: #f59e0b;
-        }
-        .diagram-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #b45309;
-            font-size: 1.1rem;
-        }
-        .dark .diagram-title {
-            color: #fbbf24;
-        }
-        .input-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .resistance-input {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100px;
-        }
-        .resistance-input input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #f59e0b;
-            border-radius: 8px;
-            text-align: center;
-            background-color: white;
-            font-weight: 500;
-        }
-        .dark .resistance-input input {
-            background-color: #1e293b;
-            border-color: #f59e0b;
-            color: #fef3c7;
-        }
-        .resistance-input label {
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #b45309;
-        }
-        .dark .resistance-input label {
-            color: #fbbf24;
-        }
-        .result-card {
-            background: #fffbeb;
-            border-radius: 12px;
-            border-left: 4px solid #f59e0b;
-        }
-        .dark .result-card {
-            background: #1e293b;
-            border-left: 4px solid #f59e0b;
-        }
-        .result-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #b45309;
-        }
-        .dark .result-value {
-            color: #fbbf24;
-        }
-        .circuit-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 20px 0;
-            padding: 15px;
-            background: #fffdf4;
-            border-radius: 12px;
-            border: 1px solid #fde68a;
-        }
-        .dark .circuit-container {
-            background: #1e293b;
-            border-color: #f59e0b;
-        }
-        .circuit {
-            font-size: 2rem;
-            color: #b45309;
-        }
-        .dark .circuit {
-            color: #fbbf24;
-        }
-        .btn-calculate {
-            background: #f59e0b;
-            color: white;
-            font-weight: 600;
-            padding: 12px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);
-        }
-        .btn-calculate:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 10px rgba(245, 158, 11, 0.3);
-            background: #d97706;
-        }
-        .btn-export {
-            background: #57534e;
-            color: white;
-            font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-        .btn-export:hover {
-            background: #44403c;
-        }
-        .formula-box {
-            background: #fffbeb;
-            border-radius: 8px;
-            padding: 15px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            margin-top: 15px;
-        }
-        .dark .formula-box {
-            background: #1e293b;
-        }
-        .diagram-svg {
-            max-width: 100%;
-            height: auto;
-            max-height: 150px;
-        }
-        .hidden-element {
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Calculadora de Circuitos con Resistencias</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom, #fef3c7, #fffbeb);
+    }
+    .dark body {
+      background: linear-gradient(to bottom, #1e293b, #0f172a);
+    }
+    .tab-active {
+      background-color: #f59e0b;
+      color: #fff;
+    }
+    .tab-inactive {
+      background-color: #e5e7eb;
+      color: #374151;
+    }
+    .dark .tab-inactive {
+      background-color: #374151;
+      color: #d1d5db;
+    }
+    .diagram-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+      padding: 15px;
+      background: #fffdf4;
+      border-radius: 12px;
+      border: 1px solid #fde68a;
+    }
+    .dark .diagram-container {
+      background: #1e293b;
+      border-color: #f59e0b;
+    }
+    .diagram-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #b45309;
+      font-size: 1.1rem;
+    }
+    .dark .diagram-title {
+      color: #fbbf24;
+    }
+    .input-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .resistance-input {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100px;
+    }
+    .resistance-input input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      text-align: center;
+      background: #fff;
+      font-weight: 500;
+      color: #4b5563;
+    }
+    .dark .resistance-input input {
+      background: #1e293b;
+      border-color: #f59e0b;
+      color: #fef3c7;
+    }
+    .resistance-input label {
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #b45309;
+    }
+    .dark .resistance-input label {
+      color: #fbbf24;
+    }
+    .result-card {
+      background: #fffbeb;
+      border-radius: 12px;
+      border-left: 4px solid #f59e0b;
+    }
+    .dark .result-card {
+      background: #1e293b;
+      border-left: 4px solid #f59e0b;
+    }
+    .result-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #b45309;
+    }
+    .dark .result-value {
+      color: #fbbf24;
+    }
+    .circuit-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+      padding: 15px;
+      background: #fffdf4;
+      border-radius: 12px;
+      border: 1px solid #fde68a;
+    }
+    .dark .circuit-container {
+      background: #1e293b;
+      border-color: #f59e0b;
+    }
+    .circuit {
+      font-size: 2rem;
+      color: #b45309;
+    }
+    .dark .circuit {
+      color: #fbbf24;
+    }
+    .btn-calculate {
+      background: #f59e0b;
+      color: #fff;
+      font-weight: 600;
+      padding: 12px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(245,158,11,0.2);
+      transition: all 0.3s ease;
+    }
+    .btn-calculate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 10px rgba(245,158,11,0.3);
+      background: #d97706;
+    }
+    .btn-export {
+      background: #57534e;
+      color: #fff;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 6px;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+    }
+    .btn-export:hover {
+      background: #44403c;
+    }
+    .formula-box {
+      background: #fffbeb;
+      border-radius: 8px;
+      padding: 15px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      margin-top: 15px;
+    }
+    .dark .formula-box {
+      background: #1e293b;
+    }
+    .diagram-svg {
+      max-width: 100%;
+      height: auto;
+      max-height: 150px;
+    }
+    .hidden-element {
+      display: none;
+    }
+
+    /* textarea en dark mode en gray-100 + texto oscuro */
+    .dark textarea {
+      background-color: #f3f4f6;   /* Tailwind gray-100 */
+      color: #1e293b;               /* texto oscuro legible */
+    }
+    ::placeholder {
+      color: #94a3b8;
+    }
+    .dark ::placeholder {
+      color: #64748b;
+    }
+  </style>
 </head>
+
 <body class="flex flex-col items-center justify-center min-h-screen p-4 dark:bg-gray-900">
-    <div class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 mb-8">
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white text-center mb-6">
-            <i class="fas fa-bolt mr-2 text-amber-500"></i>Calculadora de Resistencias
-        </h1>
+  <div class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 mb-8">
 
-        <!-- Pestañas de Selección de Circuito -->
-        <div class="flex flex-wrap justify-center gap-1 mb-6 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700">
-            <button id="tab-serie" class="py-3 px-6 rounded-lg text-sm md:text-base font-semibold transition-colors duration-300">Serie</button>
-            <button id="tab-paralelo" class="py-3 px-6 rounded-lg text-sm md:text-base font-semibold transition-colors duration-300">Paralelo</button>
-            <button id="tab-mixto" class="py-3 px-6 rounded-lg text-sm md:text-base font-semibold transition-colors duration-300">Mixto</button>
-            <button id="tab-estrella-triangulo" class="py-3 px-6 rounded-lg text-sm md:text-base font-semibold transition-colors duration-300">Estrella→Triángulo</button>
-            <button id="tab-triangulo-estrella" class="py-3 px-6 rounded-lg text-sm md:text-base font-semibold transition-colors duration-300">Triángulo→Estrella</button>
-        </div>
+    <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white text-center mb-6">
+      <i class="fas fa-bolt mr-2 text-amber-500"></i>Calculadora de Resistencias
+    </h1>
 
-        <!-- Contenedor de contenido dinámico -->
-        <div id="content-container">
-            <!-- Serie -->
-            <div id="content-serie">
-                <div class="circuit-container">
-                    <div class="circuit">
-                        <i class="fas fa-resistor"></i> — <i class="fas fa-resistor"></i> — <i class="fas fa-resistor"></i>
-                    </div>
-                </div>
-                <div class="space-y-4 w-full">
-                    <div>
-                        <label for="r-serie" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Valores de las resistencias (Ω)</label>
-                        <textarea id="r-serie" rows="3" class="w-full p-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500" placeholder="Ej: 100, 220, 470"></textarea>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Introduce los valores separados por comas.</p>
-                    </div>
-                    <button id="btn-calc-serie" class="btn-calculate w-full">Calcular Resistencia Total</button>
-                </div>
-                <div id="result-serie" class="mt-6 p-5 result-card rounded-lg min-h-[5rem] flex items-center justify-center">
-                    <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Calcular".</p>
-                </div>
-                <button id="btn-export-serie" class="btn-export w-full hidden-element">
-                    <i class="fas fa-download mr-2"></i>Exportar a archivo de texto
-                </button>
-            </div>
-
-            <!-- Paralelo -->
-            <div id="content-paralelo" class="hidden">
-                <div class="circuit-container">
-                    <div class="circuit">
-                        <div class="flex flex-col items-center">
-                            <div class="flex">
-                                <i class="fas fa-resistor"></i>
-                                <span class="mx-2">|</span>
-                                <i class="fas fa-resistor"></i>
-                                <span class="mx-2">|</span>
-                                <i class="fas fa-resistor"></i>
-                            </div>
-                            <div class="w-full h-1 bg-gray-400 mt-1"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-y-4 w-full">
-                    <div>
-                        <label for="r-paralelo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Valores de las resistencias (Ω)</label>
-                        <textarea id="r-paralelo" rows="3" class="w-full p-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500" placeholder="Ej: 100, 220, 470"></textarea>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Introduce los valores separados por comas.</p>
-                    </div>
-                    <button id="btn-calc-paralelo" class="btn-calculate w-full">Calcular Resistencia Total</button>
-                </div>
-                <div id="result-paralelo" class="mt-6 p-5 result-card rounded-lg min-h-[5rem] flex items-center justify-center">
-                    <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Calcular".</p>
-                </div>
-                <button id="btn-export-paralelo" class="btn-export w-full hidden-element">
-                    <i class="fas fa-download mr-2"></i>Exportar a archivo de texto
-                </button>
-            </div>
-            
-            <!-- Mixto -->
-            <div id="content-mixto" class="hidden">
-                <div class="circuit-container">
-                    <div class="circuit">
-                        <div class="flex items-center">
-                            <i class="fas fa-resistor"></i> — 
-                            <div class="flex flex-col items-center mx-1">
-                                <div class="flex">
-                                    <i class="fas fa-resistor"></i>
-                                    <span class="mx-1">|</span>
-                                    <i class="fas fa-resistor"></i>
-                                </div>
-                                <div class="w-full h-1 bg-gray-400"></div>
-                            </div>
-                            — <i class="fas fa-resistor"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-y-4 w-full">
-                    <div>
-                        <label for="r-mixto" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Asociación de resistencias (Ω)</label>
-                        <textarea id="r-mixto" rows="3" class="w-full p-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500" placeholder="Ej: 100, (220, 470), 1000"></textarea>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            <span class="font-semibold">Leyenda:</span> Usa paréntesis <b>()</b> para agrupar resistencias en <b>paralelo</b>. Los valores separados por comas se consideran en <b>serie</b>.
-                        </p>
-                    </div>
-                    <button id="btn-calc-mixto" class="btn-calculate w-full">Calcular Resistencia Total</button>
-                </div>
-                <div id="result-mixto" class="mt-6 p-5 result-card rounded-lg min-h-[5rem] flex items-center justify-center">
-                    <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Calcular".</p>
-                </div>
-                <button id="btn-export-mixto" class="btn-export w-full hidden-element">
-                    <i class="fas fa-download mr-2"></i>Exportar a archivo de texto
-                </button>
-            </div>
-            
-            <!-- Estrella a Triángulo -->
-            <div id="content-estrella-triangulo" class="hidden">
-                <div class="diagram-container">
-                    <div class="diagram-title">Configuración Estrella (Y)</div>
-                    <img src="Estrella.png" class="diagram-svg">
-                </div>
-                
-                <div class="input-group">
-                    <div class="resistance-input">
-                        <label for="r1-estrella">R1 (Ω)</label>
-                        <input type="number" id="r1-estrella" min="0.1" step="0.1" placeholder="100">
-                    </div>
-                    <div class="resistance-input">
-                        <label for="r2-estrella">R2 (Ω)</label>
-                        <input type="number" id="r2-estrella" min="0.1" step="0.1" placeholder="200">
-                    </div>
-                    <div class="resistance-input">
-                        <label for="r3-estrella">R3 (Ω)</label>
-                        <input type="number" id="r3-estrella" min="0.1" step="0.1" placeholder="300">
-                    </div>
-                </div>
-                
-                <button id="btn-estrella-triangulo" class="btn-calculate w-full">Convertir a Triángulo</button>
-                
-                <div class="diagram-container mt-8">
-                    <div class="diagram-title">Configuración Triángulo (Δ)</div>
-                    <img src="Delta.png" class="diagram-svg">
-                </div>
-                
-                <div id="result-estrella-triangulo" class="mt-6 p-5 result-card rounded-lg min-h-[5rem] flex flex-col items-center justify-center">
-                    <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Convertir".</p>
-                </div>
-                
-                <button id="btn-export-estrella" class="btn-export w-full">
-                    <i class="fas fa-download mr-2"></i>Exportar a archivo de texto
-                </button>
-            </div>
-            
-            <!-- Triángulo a Estrella -->
-            <div id="content-triangulo-estrella" class="hidden">
-                <div class="diagram-container">
-                    <div class="diagram-title">Configuración Triángulo (Δ)</div>
-                    <img src="Delta.png" class="diagram-svg">
-                </div>
-                
-                <div class="input-group">
-                    <div class="resistance-input">
-                        <label for="ra-triangulo">Ra (Ω)</label>
-                        <input type="number" id="ra-triangulo" min="0.1" step="0.1" placeholder="100">
-                    </div>
-                    <div class="resistance-input">
-                        <label for="rb-triangulo">Rb (Ω)</label>
-                        <input type="number" id="rb-triangulo" min="0.1" step="0.1" placeholder="200">
-                    </div>
-                    <div class="resistance-input">
-                        <label for="rc-triangulo">Rc (Ω)</label>
-                        <input type="number" id="rc-triangulo" min="0.1" step="0.1" placeholder="300">
-                    </div>
-                </div>
-                
-                <button id="btn-triangulo-estrella" class="btn-calculate w-full">Convertir a Estrella</button>
-                
-                <div class="diagram-container mt-8">
-                    <div class="diagram-title">Configuración Estrella (Y)</div>
-                    <img src="Estrella.png" class="diagram-svg">
-                </div>
-                
-                <div id="result-triangulo-estrella" class="mt-6 p-5 result-card rounded-lg min-h-[5rem] flex flex-col items-center justify-center">
-                    <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Convertir".</p>
-                </div>
-                
-                <button id="btn-export-triangulo" class="btn-export w-full">
-                    <i class="fas fa-download mr-2"></i>Exportar a archivo de texto
-                </button>
-            </div>
-        </div>
+    <!-- pestañas -->
+    <div class="flex flex-wrap justify-center gap-1 mb-6 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700">
+      <button id="tab-serie" class="py-3 px-6 rounded-lg text-sm md:text-base font-semibold transition-colors duration-300">Serie</button>
+      <button id="tab-paralelo" class="py-3 px-6 rounded-lg text-sm md:text-base font-semibold transition-colors duration-300">Paralelo</button>
+      <button id="tab-mixto" class="py-3 px-6 rounded-lg text-sm md:text-base font-semibold transition-colors duration-300">Mixto</button>
+      <button id="tab-estrella-triangulo" class="py-3 px-6 rounded-lg text-sm md:text-base font-semibold transition-colors duration-300">Estrella→Triángulo</button>
+      <button id="tab-triangulo-estrella" class="py-3 px-6 rounded-lg text-sm md:text-base font-semibold transition-colors duration-300">Triángulo→Estrella</button>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- Elementos del DOM ---
-            const tabs = {
-                serie: document.getElementById('tab-serie'),
-                paralelo: document.getElementById('tab-paralelo'),
-                mixto: document.getElementById('tab-mixto'),
-                estrellaTriangulo: document.getElementById('tab-estrella-triangulo'),
-                trianguloEstrella: document.getElementById('tab-triangulo-estrella')
-            };
-            
-            const contents = {
-                serie: document.getElementById('content-serie'),
-                paralelo: document.getElementById('content-paralelo'),
-                mixto: document.getElementById('content-mixto'),
-                estrellaTriangulo: document.getElementById('content-estrella-triangulo'),
-                trianguloEstrella: document.getElementById('content-triangulo-estrella')
-            };
+    <div id="content-container">
+      <!-- Serie -->
+      <div id="content-serie">
+        <div class="circuit-container">
+          <div class="circuit">
+            <i class="fas fa-resistor"></i> — <i class="fas fa-resistor"></i> — <i class="fas fa-resistor"></i>
+          </div>
+        </div>
+        <div class="space-y-4 w-full">
+          <div>
+            <label for="r-serie" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Valores de las resistencias (Ω)</label>
+            <textarea id="r-serie" rows="3"
+                      class="w-full p-3 bg-white dark:bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500"
+                      placeholder="Ej: 100, 220, 470"></textarea>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Introduce los valores separados por comas.</p>
+          </div>
+          <button id="btn-calc-serie" class="btn-calculate w-full">Calcular Resistencia Total</button>
+        </div>
+        <div id="result-serie" class="mt-6 p-5 result-card rounded-lg min-h-[5rem] flex items-center justify-center">
+          <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Calcular".</p>
+        </div>
+        <button id="btn-export-serie" class="btn-export w-full hidden-element">
+          <i class="fas fa-download mr-2"></i>Exportar a archivo de texto
+        </button>
+      </div>
 
-            // --- Lógica de las Pestañas ---
-            function switchTab(activeTab) {
-                for (const key in contents) {
-                    if (key === activeTab) {
-                        contents[key].style.display = 'block';
-                        tabs[key].classList.add('tab-active');
-                        tabs[key].classList.remove('tab-inactive');
-                    } else {
-                        contents[key].style.display = 'none';
-                        tabs[key].classList.add('tab-inactive');
-                        tabs[key].classList.remove('tab-active');
-                    }
-                }
-            }
+      <!-- Paralelo -->
+      <div id="content-paralelo" class="hidden">
+        <div class="circuit-container">
+          <div class="circuit">
+            <div class="flex flex-col items-center">
+              <div class="flex">
+                <i class="fas fa-resistor"></i><span class="mx-2">|</span><i class="fas fa-resistor"></i><span class="mx-2">|</span><i class="fas fa-resistor"></i>
+              </div>
+              <div class="w-full h-1 bg-gray-400 mt-1"></div>
+            </div>
+          </div>
+        </div>
+        <div class="space-y-4 w-full">
+          <div>
+            <label for="r-paralelo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Valores de las resistencias (Ω)</label>
+            <textarea id="r-paralelo" rows="3"
+                      class="w-full p-3 bg-white dark:bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500"
+                      placeholder="Ej: 100, 220, 470"></textarea>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Introduce los valores separados por comas.</p>
+          </div>
+          <button id="btn-calc-paralelo" class="btn-calculate w-full">Calcular Resistencia Total</button>
+        </div>
+        <div id="result-paralelo" class="mt-6 p-5 result-card rounded-lg min-h-[5rem] flex items-center justify-center">
+          <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Calcular".</p>
+        </div>
+        <button id="btn-export-paralelo" class="btn-export w-full hidden-element">
+          <i class="fas fa-download mr-2"></i>Exportar a archivo de texto
+        </button>
+      </div>
 
-            for (const key in tabs) {
-                tabs[key].addEventListener('click', () => switchTab(key));
-            }
+      <!-- Mixto -->
+      <div id="content-mixto" class="hidden">
+        <div class="circuit-container">
+          <div class="circuit">
+            <div class="flex items-center">
+              <i class="fas fa-resistor"></i> —
+              <div class="flex flex-col items-center mx-1">
+                <div class="flex">
+                  <i class="fas fa-resistor"></i><span class="mx-1">|</span><i class="fas fa-resistor"></i>
+                </div>
+                <div class="w-full h-1 bg-gray-400"></div>
+              </div>
+              — <i class="fas fa-resistor"></i>
+            </div>
+          </div>
+        </div>
+        <div class="space-y-4 w-full">
+          <div>
+            <label for="r-mixto" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Asociación de resistencias (Ω)</label>
+            <textarea id="r-mixto" rows="3"
+                      class="w-full p-3 bg-white dark:bg-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-amber-500 focus:border-amber-500"
+                      placeholder="Ej: 100, (220, 470), 1000"></textarea>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <span class="font-semibold">Leyenda:</span> Usa paréntesis <b>()</b> para paralelos; comas para serie.
+            </p>
+          </div>
+          <button id="btn-calc-mixto" class="btn-calculate w-full">Calcular Resistencia Total</button>
+        </div>
+        <div id="result-mixto" class="mt-6 p-5 result-card rounded-lg min-h-[5rem] flex items-center justify-center">
+          <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Calcular".</p>
+        </div>
+        <button id="btn-export-mixto" class="btn-export w-full hidden-element">
+          <i class="fas fa-download mr-2"></i>Exportar a archivo de texto
+        </button>
+      </div>
 
-            // Iniciar en la pestaña "Serie" por defecto
-            switchTab('serie');
+      <!-- Estrella → Triángulo -->
+      <div id="content-estrella-triangulo" class="hidden">
+        <div class="diagram-container">
+          <div class="diagram-title">Configuración Estrella (Y)</div>
+          <img src="Estrella.png" class="diagram-svg">
+        </div>
+        <div class="input-group">
+          <div class="resistance-input">
+            <label for="r1-estrella">R1 (Ω)</label>
+            <input type="number" id="r1-estrella" min="0.1" step="0.1" placeholder="100">
+          </div>
+          <div class="resistance-input">
+            <label for="r2-estrella">R2 (Ω)</label>
+            <input type="number" id="r2-estrella" min="0.1" step="0.1" placeholder="200">
+          </div>
+          <div class="resistance-input">
+            <label for="r3-estrella">R3 (Ω)</label>
+            <input type="number" id="r3-estrella" min="0.1" step="0.1" placeholder="300">
+          </div>
+        </div>
+        <button id="btn-estrella-triangulo" class="btn-calculate w-full">Convertir a Triángulo</button>
+        <div class="diagram-container mt-8">
+          <div class="diagram-title">Configuración Triángulo (Δ)</div>
+          <img src="Delta.png" class="diagram-svg">
+        </div>
+        <div id="result-estrella-triangulo" class="mt-6 p-5 result-card rounded-lg min-h-[5rem] flex flex-col items-center justify-center">
+          <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Convertir".</p>
+        </div>
+        <button id="btn-export-estrella" class="btn-export w-full">
+          <i class="fas fa-download mr-2"></i>Exportar a archivo de texto
+        </button>
+      </div>
 
-            // --- Funciones de Utilidad ---
-            function parseInput(inputString) {
-                if (!inputString.trim()) return [];
-                const values = inputString.split(',')
-                    .map(v => parseFloat(v.trim()))
-                    .filter(v => !isNaN(v) && v > 0);
-                return values;
-            }
-            
-            // Función para exportar datos a archivo de texto
-            function exportToText(filename, content) {
-                const blob = new Blob([content], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }
+      <!-- Triángulo → Estrella -->
+      <div id="content-triangulo-estrella" class="hidden">
+        <div class="diagram-container">
+          <div class="diagram-title">Configuración Triángulo (Δ)</div>
+          <img src="Delta.png" class="diagram-svg">
+        </div>
+        <div class="input-group">
+          <div class="resistance-input">
+            <label for="ra-triangulo">Ra (Ω)</label>
+            <input type="number" id="ra-triangulo" min="0.1" step="0.1" placeholder="100">
+          </div>
+          <div class="resistance-input">
+            <label for="rb-triangulo">Rb (Ω)</label>
+            <input type="number" id="rb-triangulo" min="0.1" step="0.1" placeholder="200">
+          </div>
+          <div class="resistance-input">
+            <label for="rc-triangulo">Rc (Ω)</label>
+            <input type="number" id="rc-triangulo" min="0.1" step="0.1" placeholder="300">
+          </div>
+        </div>
+        <button id="btn-triangulo-estrella" class="btn-calculate w-full">Convertir a Estrella</button>
+        <div class="diagram-container mt-8">
+          <div class="diagram-title">Configuración Estrella (Y)</div>
+          <img src="Estrella.png" class="diagram-svg">
+        </div>
+        <div id="result-triangulo-estrella" class="mt-6 p-5 result-card rounded-lg min-h-[5rem] flex flex-col items-center justify-center">
+          <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Convertir".</p>
+        </div>
+        <button id="btn-export-triangulo" class="btn-export w-full">
+          <i class="fas fa-download mr-2"></i>Exportar a archivo de texto
+        </button>
+      </div>
+    </div>
+  </div>
 
-            // --- Lógica de Cálculo ---
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabs = {
+        serie: document.getElementById('tab-serie'),
+        paralelo: document.getElementById('tab-paralelo'),
+        mixto: document.getElementById('tab-mixto'),
+        estrellaTriangulo: document.getElementById('tab-estrella-triangulo'),
+        trianguloEstrella: document.getElementById('tab-triangulo-estrella')
+      };
+      const contents = {
+        serie: document.getElementById('content-serie'),
+        paralelo: document.getElementById('content-paralelo'),
+        mixto: document.getElementById('content-mixto'),
+        estrellaTriangulo: document.getElementById('content-estrella-triangulo'),
+        trianguloEstrella: document.getElementById('content-triangulo-estrella')
+      };
 
-            // SERIE
-            document.getElementById('btn-calc-serie').addEventListener('click', () => {
-                const values = parseInput(document.getElementById('r-serie').value);
-                if (values.length === 0) {
-                    document.getElementById('result-serie').innerHTML = `<p class="text-red-500 font-semibold">Introduce valores válidos.</p>`;
-                    document.getElementById('btn-export-serie').classList.add('hidden-element');
-                    return;
-                }
-                
-                const totalResistance = values.reduce((sum, val) => sum + val, 0);
-                document.getElementById('result-serie').innerHTML = `
-                    <div class="text-center">
-                        <p class="font-bold text-lg text-amber-700 dark:text-amber-300">Resistencia Total (Serie)</p>
-                        <p class="mt-2 font-semibold text-2xl result-value">${totalResistance.toFixed(2)} Ω</p>
-                        <p class="text-sm mt-3 text-gray-700 dark:text-gray-300">${values.join('Ω + ')}Ω = ${totalResistance.toFixed(2)}Ω</p>
-                    </div>
-                `;
-                
-                // Guardar datos para exportación
-                window.lastSerieCalc = {
-                    values: values,
-                    total: totalResistance
-                };
-                
-                // Mostrar botón de exportación
-                document.getElementById('btn-export-serie').classList.remove('hidden-element');
-            });
+      function switchTab(active) {
+        for (let key in contents) {
+          contents[key].style.display = key === active ? 'block' : 'none';
+          tabs[key].classList.toggle('tab-active', key === active);
+          tabs[key].classList.toggle('tab-inactive', key !== active);
+        }
+      }
+      Object.keys(tabs).forEach(k => tabs[k].addEventListener('click', () => switchTab(k)));
+      switchTab('serie');
 
-            // PARALELO
-            document.getElementById('btn-calc-paralelo').addEventListener('click', () => {
-                const values = parseInput(document.getElementById('r-paralelo').value);
-                if (values.length === 0) {
-                    document.getElementById('result-paralelo').innerHTML = `<p class="text-red-500 font-semibold">Introduce valores válidos.</p>`;
-                    document.getElementById('btn-export-paralelo').classList.add('hidden-element');
-                    return;
-                }
-                
-                const sumOfReciprocals = values.reduce((sum, val) => sum + (1 / val), 0);
-                const totalResistance = 1 / sumOfReciprocals;
-                const reciprocalExpression = values.map(val => `1/${val}`).join(' + ');
-                
-                document.getElementById('result-paralelo').innerHTML = `
-                    <div class="text-center">
-                        <p class="font-bold text-lg text-amber-700 dark:text-amber-300">Resistencia Total (Paralelo)</p>
-                        <p class="mt-2 font-semibold text-2xl result-value">${totalResistance.toFixed(2)} Ω</p>
-                        <div class="formula-box">
-                            <p class="font-medium text-gray-800 dark:text-gray-200">Cálculo:</p>
-                            <p>1/R<sub>T</sub> = ${reciprocalExpression}</p>
-                            <p>R<sub>T</sub> = 1 / (${values.join(' + ')}) = ${totalResistance.toFixed(2)}Ω</p>
-                        </div>
-                    </div>
-                `;
-                
-                // Guardar datos para exportación
-                window.lastParaleloCalc = {
-                    values: values,
-                    total: totalResistance
-                };
-                
-                // Mostrar botón de exportación
-                document.getElementById('btn-export-paralelo').classList.remove('hidden-element');
-            });
+      function parseInput(str) {
+        if (!str.trim()) return [];
+        return str.split(',')
+                  .map(s => parseFloat(s.trim()))
+                  .filter(n => !isNaN(n) && n > 0);
+      }
 
-            // MIXTO
-            document.getElementById('btn-calc-mixto').addEventListener('click', () => {
-                let expression = document.getElementById('r-mixto').value.trim();
-                if (!expression) {
-                    document.getElementById('result-mixto').innerHTML = `<p class="text-red-500 font-semibold">El campo está vacío.</p>`;
-                    document.getElementById('btn-export-mixto').classList.add('hidden-element');
-                    return;
-                }
+      function exportToText(filename, content) {
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
 
-                try {
-                    const innerGroupRegex = /\(([^()]+)\)/;
-                    let match;
-                    let steps = [];
+      // --- SERIE ---
+      document.getElementById('btn-calc-serie').addEventListener('click', () => {
+        const vals = parseInput(document.getElementById('r-serie').value);
+        const resEl = document.getElementById('result-serie');
+        if (!vals.length) {
+          resEl.innerHTML = '<p class="text-red-500 font-semibold">Introduce valores válidos.</p>';
+          document.getElementById('btn-export-serie').classList.add('hidden-element');
+          return;
+        }
+        const total = vals.reduce((a,b) => a + b, 0);
+        resEl.innerHTML = `
+          <div class="text-center">
+            <p class="font-bold text-lg text-amber-700 dark:text-amber-300">Resistencia Total (Serie)</p>
+            <p class="mt-2 font-semibold text-2xl result-value">${total.toFixed(2)} Ω</p>
+            <p class="text-sm mt-3 text-gray-700 dark:text-gray-300">${vals.join('Ω + ')}Ω = ${total.toFixed(2)}Ω</p>
+          </div>`;
+        window.lastSerie = { vals, total };
+        document.getElementById('btn-export-serie').classList.remove('hidden-element');
+      });
+      document.getElementById('btn-export-serie').addEventListener('click', () => {
+        if (!window.lastSerie) return alert('Calcula primero');
+        const { vals, total } = window.lastSerie;
+        const txt = `Resistencias en Serie\n\nValores: ${vals.join(', ')} Ω\nTotal: ${total.toFixed(2)} Ω\nFecha: ${new Date().toLocaleString()}`;
+        exportToText('serie.txt', txt);
+      });
 
-                    while ((match = innerGroupRegex.exec(expression)) !== null) {
-                        const groupContent = match[1];
-                        const parallelValues = parseInput(groupContent);
-                        if (parallelValues.length === 0) {
-                             throw new Error(`Grupo inválido: "${match[0]}"`);
-                        }
-                        
-                        const sumOfReciprocals = parallelValues.reduce((sum, val) => sum + (1 / val), 0);
-                        const parallelResistance = 1 / sumOfReciprocals;
-                        steps.push(`Grupo paralelo (${parallelValues.join(', ')}) → ${parallelResistance.toFixed(2)}Ω`);
-                        expression = expression.replace(match[0], parallelResistance.toString());
-                    }
+      // --- PARALELO ---
+      document.getElementById('btn-calc-paralelo').addEventListener('click', () => {
+        const vals = parseInput(document.getElementById('r-paralelo').value);
+        const resEl = document.getElementById('result-paralelo');
+        if (!vals.length) {
+          resEl.innerHTML = '<p class="text-red-500 font-semibold">Introduce valores válidos.</p>';
+          document.getElementById('btn-export-paralelo').classList.add('hidden-element');
+          return;
+        }
+        const sumRec = vals.reduce((a,b)=> a + 1/b, 0);
+        const total = 1/sumRec;
+        resEl.innerHTML = `
+          <div class="text-center">
+            <p class="font-bold text-lg text-amber-700 dark:text-amber-300">Resistencia Total (Paralelo)</p>
+            <p class="mt-2 font-semibold text-2xl result-value">${total.toFixed(2)} Ω</p>
+            <div class="formula-box">
+              <p class="font-medium text-gray-800 dark:text-gray-200">Cálculo:</p>
+              <p>1/RT = ${vals.map(v=>`1/${v}`).join(' + ')}</p>
+              <p>RT = 1/( ${vals.join(' + ')} ) = ${total.toFixed(2)}Ω</p>
+            </div>
+          </div>`;
+        window.lastPara = { vals, total };
+        document.getElementById('btn-export-paralelo').classList.remove('hidden-element');
+      });
+      document.getElementById('btn-export-paralelo').addEventListener('click', () => {
+        if (!window.lastPara) return alert('Calcula primero');
+        const { vals, total } = window.lastPara;
+        const txt = `Resistencias en Paralelo\n\nValores: ${vals.join(', ')} Ω\nTotal: ${total.toFixed(2)} Ω\nFecha: ${new Date().toLocaleString()}`;
+        exportToText('paralelo.txt', txt);
+      });
 
-                    const seriesValues = parseInput(expression);
-                    if (seriesValues.length === 0) {
-                        throw new Error("No hay valores válidos.");
-                    }
-
-                    const totalResistance = seriesValues.reduce((sum, val) => sum + val, 0);
-                    
-                    let resultHTML = `
-                        <div class="text-center">
-                            <p class="font-bold text-lg text-amber-700 dark:text-amber-300">Resistencia Total (Mixta)</p>
-                            <p class="mt-2 font-semibold text-2xl result-value">${totalResistance.toFixed(2)} Ω</p>
-                    `;
-                    
-                    if (steps.length > 0) {
-                        resultHTML += `<div class="formula-box text-left">`;
-                        resultHTML += `<p class="font-medium mb-2 text-gray-800 dark:text-gray-200">Pasos de cálculo:</p>`;
-                        steps.forEach((step, index) => {
-                            resultHTML += `<p class="mb-1">${index + 1}. ${step}</p>`;
-                        });
-                        resultHTML += `<p class="mt-2 font-medium">Resistencia final: ${seriesValues.join('Ω + ')}Ω = ${totalResistance.toFixed(2)}Ω</p>`;
-                        resultHTML += `</div>`;
-                    }
-                    
-                    resultHTML += `</div>`;
-                    document.getElementById('result-mixto').innerHTML = resultHTML;
-
-                    // Guardar datos para exportación
-                    window.lastMixtoCalc = {
-                        expression: document.getElementById('r-mixto').value,
-                        steps: steps,
-                        values: seriesValues,
-                        total: totalResistance
-                    };
-                    
-                    // Mostrar botón de exportación
-                    document.getElementById('btn-export-mixto').classList.remove('hidden-element');
-
-                } catch (error) {
-                    document.getElementById('result-mixto').innerHTML = `<p class="text-red-500 font-semibold">Error: ${error.message}</p>`;
-                    document.getElementById('btn-export-mixto').classList.add('hidden-element');
-                }
-            });
-
-            // ESTRELLA A TRIÁNGULO
-            document.getElementById('btn-estrella-triangulo').addEventListener('click', () => {
-                const r1 = parseFloat(document.getElementById('r1-estrella').value);
-                const r2 = parseFloat(document.getElementById('r2-estrella').value);
-                const r3 = parseFloat(document.getElementById('r3-estrella').value);
-                
-                if (isNaN(r1) || isNaN(r2) || isNaN(r3) || r1 <= 0 || r2 <= 0 || r3 <= 0) {
-                    document.getElementById('result-estrella-triangulo').innerHTML = `<p class="text-red-500 font-semibold">Introduce valores válidos para todas las resistencias.</p>`;
-                    return;
-                }
-                
-                const numerator = r1*r2 + r1*r3 + r2*r3;
-                const ra = numerator / r1;
-                const rb = numerator / r2;
-                const rc = numerator / r3;
-                
-                document.getElementById('result-estrella-triangulo').innerHTML = `
-                    <div class="text-center">
-                        <p class="font-bold text-lg text-amber-700 dark:text-amber-300">Resistencias Equivalentes en Triángulo</p>
-                        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-lg">
-                                <p class="font-semibold text-amber-800 dark:text-amber-200">Ra</p>
-                                <p class="mt-1 text-xl font-bold result-value">${ra.toFixed(2)} Ω</p>
-                            </div>
-                            <div class="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-lg">
-                                <p class="font-semibold text-amber-800 dark:text-amber-200">Rb</p>
-                                <p class="mt-1 text-xl font-bold result-value">${rb.toFixed(2)} Ω</p>
-                            </div>
-                            <div class="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-lg">
-                                <p class="font-semibold text-amber-800 dark:text-amber-200">Rc</p>
-                                <p class="mt-1 text-xl font-bold result-value">${rc.toFixed(2)} Ω</p>
-                            </div>
-                        </div>
-                        <div class="formula-box">
-                            <p class="font-medium text-gray-800 dark:text-gray-200">Fórmulas utilizadas:</p>
-                            <p class="mt-1">Ra = (R1×R2 + R1×R3 + R2×R3) / R1</p>
-                            <p>Rb = (R1×R2 + R1×R3 + R2×R3) / R2</p>
-                            <p>Rc = (R1×R2 + R1×R3 + R2×R3) / R3</p>
-                            <p class="mt-2">Ra = (${r1}×${r2} + ${r1}×${r3} + ${r2}×${r3}) / ${r1} = ${ra.toFixed(2)}Ω</p>
-                        </div>
-                    </div>
-                `;
-                
-                // Guardar datos para exportación
-                window.lastConversion = {
-                    type: 'estrella-triangulo',
-                    inputs: { R1: r1, R2: r2, R3: r3 },
-                    outputs: { Ra: ra, Rb: rb, Rc: rc }
-                };
-            });
-
-            // TRIÁNGULO A ESTRELLA
-            document.getElementById('btn-triangulo-estrella').addEventListener('click', () => {
-                const ra = parseFloat(document.getElementById('ra-triangulo').value);
-                const rb = parseFloat(document.getElementById('rb-triangulo').value);
-                const rc = parseFloat(document.getElementById('rc-triangulo').value);
-                
-                if (isNaN(ra) || isNaN(rb) || isNaN(rc) || ra <= 0 || rb <= 0 || rc <= 0) {
-                    document.getElementById('result-triangulo-estrella').innerHTML = `<p class="text-red-500 font-semibold">Introduce valores válidos para todas las resistencias.</p>`;
-                    return;
-                }
-                
-                const denominator = ra + rb + rc;
-                const r1 = (rb * rc) / denominator;
-                const r2 = (ra * rc) / denominator;
-                const r3 = (ra * rb) / denominator;
-                
-                document.getElementById('result-triangulo-estrella').innerHTML = `
-                    <div class="text-center">
-                        <p class="font-bold text-lg text-amber-700 dark:text-amber-300">Resistencias Equivalentes en Estrella</p>
-                        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-lg">
-                                <p class="font-semibold text-amber-800 dark:text-amber-200">R1</p>
-                                <p class="mt-1 text-xl font-bold result-value">${r1.toFixed(2)} Ω</p>
-                            </div>
-                            <div class="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-lg">
-                                <p class="font-semibold text-amber-800 dark:text-amber-200">R2</p>
-                                <p class="mt-1 text-xl font-bold result-value">${r2.toFixed(2)} Ω</p>
-                            </div>
-                            <div class="bg-amber-50 dark:bg-amber-900/30 p-4 rounded-lg">
-                                <p class="font-semibold text-amber-800 dark:text-amber-200">R3</p>
-                                <p class="mt-1 text-xl font-bold result-value">${r3.toFixed(2)} Ω</p>
-                            </div>
-                        </div>
-                        <div class="formula-box">
-                            <p class="font-medium text-gray-800 dark:text-gray-200">Fórmulas utilizadas:</p>
-                            <p class="mt-1">R1 = (Rb × Rc) / (Ra + Rb + Rc)</p>
-                            <p>R2 = (Ra × Rc) / (Ra + Rb + Rc)</p>
-                            <p>R3 = (Ra × Rb) / (Ra + Rb + Rc)</p>
-                            <p class="mt-2">R1 = (${rb} × ${rc}) / (${ra} + ${rb} + ${rc}) = ${r1.toFixed(2)}Ω</p>
-                        </div>
-                    </div>
-                `;
-                
-                // Guardar datos para exportación
-                window.lastConversion = {
-                    type: 'triangulo-estrella',
-                    inputs: { Ra: ra, Rb: rb, Rc: rc },
-                    outputs: { R1: r1, R2: r2, R3: r3 }
-                };
-            });
-
-            // Exportar a archivo de texto (Serie)
-            document.getElementById('btn-export-serie').addEventListener('click', () => {
-                if (!window.lastSerieCalc) {
-                    alert('Realiza un cálculo primero antes de exportar');
-                    return;
-                }
-                
-                const { values, total } = window.lastSerieCalc;
-                const content = `Cálculo de Resistencias en Serie\n\n` +
-                               `Resistencias: ${values.join(', ')} Ω\n` +
-                               `Resistencia Total: ${total.toFixed(2)} Ω\n\n` +
-                               `Fecha: ${new Date().toLocaleString()}`;
-                
-                exportToText('resistencia_serie.txt', content);
-            });
-
-            // Exportar a archivo de texto (Paralelo)
-            document.getElementById('btn-export-paralelo').addEventListener('click', () => {
-                if (!window.lastParaleloCalc) {
-                    alert('Realiza un cálculo primero antes de exportar');
-                    return;
-                }
-                
-                const { values, total } = window.lastParaleloCalc;
-                const content = `Cálculo de Resistencias en Paralelo\n\n` +
-                               `Resistencias: ${values.join(', ')} Ω\n` +
-                               `Resistencia Total: ${total.toFixed(2)} Ω\n\n` +
-                               `Fecha: ${new Date().toLocaleString()}`;
-                
-                exportToText('resistencia_paralelo.txt', content);
-            });
-
-            // Exportar a archivo de texto (Mixto)
-            document.getElementById('btn-export-mixto').addEventListener('click', () => {
-                if (!window.lastMixtoCalc) {
-                    alert('Realiza un cálculo primero antes de exportar');
-                    return;
-                }
-                
-                const { expression, steps, total } = window.lastMixtoCalc;
-                let content = `Cálculo de Resistencias Mixtas\n\n` +
-                              `Expresión original: ${expression}\n` +
-                              `Resistencia Total: ${total.toFixed(2)} Ω\n\n`;
-                
-                if (steps.length > 0) {
-                    content += `Pasos de cálculo:\n`;
-                    steps.forEach((step, index) => {
-                        content += `${index + 1}. ${step}\n`;
-                    });
-                    content += `\n`;
-                }
-                
-                content += `Fecha: ${new Date().toLocaleString()}`;
-                
-                exportToText('resistencia_mixta.txt', content);
-            });
-
-            // Exportar a archivo de texto (Estrella a Triángulo)
-            document.getElementById('btn-export-estrella').addEventListener('click', () => {
-                if (!window.lastConversion || window.lastConversion.type !== 'estrella-triangulo') {
-                    alert('Realiza un cálculo primero antes de exportar');
-                    return;
-                }
-                
-                const { inputs, outputs } = window.lastConversion;
-                const content = `Cálculo de Conversión Estrella a Triángulo\n\n` +
-                               `Entradas:\n` +
-                               `R1 = ${inputs.R1} Ω\n` +
-                               `R2 = ${inputs.R2} Ω\n` +
-                               `R3 = ${inputs.R3} Ω\n\n` +
-                               `Resultados:\n` +
-                               `Ra = ${outputs.Ra.toFixed(2)} Ω\n` +
-                               `Rb = ${outputs.Rb.toFixed(2)} Ω\n` +
-                               `Rc = ${outputs.Rc.toFixed(2)} Ω\n\n` +
-                               `Fecha: ${new Date().toLocaleString()}`;
-                
-                exportToText('conversion_estrella_triangulo.txt', content);
-            });
-
-            // Exportar a archivo de texto (Triángulo a Estrella)
-            document.getElementById('btn-export-triangulo').addEventListener('click', () => {
-                if (!window.lastConversion || window.lastConversion.type !== 'triangulo-estrella') {
-                    alert('Realiza un cálculo primero antes de exportar');
-                    return;
-                }
-                
-                const { inputs, outputs } = window.lastConversion;
-                const content = `Cálculo de Conversión Triángulo a Estrella\n\n` +
-                               `Entradas:\n` +
-                               `Ra = ${inputs.Ra} Ω\n` +
-                               `Rb = ${inputs.Rb} Ω\n` +
-                               `Rc = ${inputs.Rc} Ω\n\n` +
-                               `Resultados:\n` +
-                               `R1 = ${outputs.R1.toFixed(2)} Ω\n` +
-                               `R2 = ${outputs.R2.toFixed(2)} Ω\n` +
-                               `R3 = ${outputs.R3.toFixed(2)} Ω\n\n` +
-                               `Fecha: ${new Date().toLocaleString()}`;
-                
-                exportToText('conversion_triangulo_estrella.txt', content);
-            });
-        });
-    </script>
+      // --- MIXTO ---
+      document.getElementById('btn-calc-mixto').addEventListener('click', () => {
+        let expr = document.getElementById('r-mixto').value.trim();
+        const resEl = document.getElementById('result-mixto');
+        if (!expr) {
+          resEl.innerHTML = '<p class="text-red-500 font-semibold">El campo está vacío.</p>';
+          document.getElementById('btn-export-mixto').classList.add('hidden-element');
+          return;
+        }
+        try {
+          const pasos = [];
+          const re = /\(([^()]+)\)/;
+          let m;
+          while ((m = re.exec(expr))) {
+            const grp = parseInput(m[1]);
+            if (!grp.length) throw 'Grupo inválido ' + m[0];
+            const pr = 1 / grp.reduce((a,b)=> a + 1/b, 0);
+            pasos.push(`(${grp.join(', ')}) → ${pr.toFixed(2)}Ω`);
+            expr = expr.replace(m[0], pr);
+          }
+          const ser = parseInput(expr);
+          if (!ser.length) throw 'No hay valores válidos.';
+          const total = ser.reduce((a,b)=> a + b, 0);
+          let html = `
+            <div class="text-center">
+              <p class="font-bold text-lg text-amber-700 dark:text-amber-300">Resistencia Total (Mixta)</p>
+              <p class="mt-2 font-semibold text-2xl result-value">${total.toFixed(2)} Ω</p>`;
+          if (pasos.length) {
+            html += `<div class="formula-box text-left">
+                       <p class="font-medium mb-2 text-gray-800 dark:text-gray-200">Pasos:</p>
+                       ${pasos.map((p,i)=>`<p>${i+1}. ${p}</p>`).join('')}
+                       <p class="mt-2">Serie final: ${ser.join('Ω + ')}Ω = ${total.toFixed(2)}Ω</p>
+                     </div>`;
+          }
+          html += `</div>`;
+          resEl.innerHTML = html;
+          window.lastMix = { expr: document.getElementById('r-mixto').value, pasos, total };
+          document.getElementById('btn-export-mixto').classList.remove('hidden-element');
+        } catch(err) {
+          resEl.innerHTML = `<p class="text-red-500 font-semibold">Error: ${err}</p>`;
+          document.getElementById('btn-export-mixto').classList.add('hidden-element');
+        }
+      });
+      document.getElementById('btn-export-mixto').addEventListener('click', () => {
+        if (!window.lastMix) return alert('Calcula primero');
+        const { expr, pasos, total } = window.lastMix;
+        let txt = `Resistencias Mixtas\n\nExpresión: ${expr}\nTotal: ${total.toFixed(2)}Ω\n\nPasos:\n`;
+        pasos.forEach((p,i)=> txt+= `${i+1}. ${p}\n`);
+        txt += `\nFecha: ${new Date().toLocaleString()}`;
+        exportToText('mixto.txt', txt);
+      });
+    });
+  </script>
 </body>
 </html>
