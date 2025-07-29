@@ -1,93 +1,113 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calcula electrónica con Angelmicelti</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cálculos electrónicos con Angelmicelti</title>
+
+  <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
   <style>
-    /* Reset */
-    * {
+    /* Reset global */
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+    html { font-size: 16px; }
 
+    /* Fondo tenue con pseudo-elemento */
     body {
+      position: relative;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f5f5f5;
       color: #333;
+      background: #f5f5f5;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url('images/fondo-electronica.jpg') center/cover no-repeat;
+      opacity: 0.20; /* Opacidad aumentada para ver mejor el fondo */
+      z-index: -1;
     }
 
     header {
-      background-color: #1a1a2e;
+      background: #1a1a2e;
       color: #fff;
       text-align: center;
-      padding: 2rem 1rem;
+      padding: 1.5rem 1rem;
     }
-
     header h1 {
-      font-size: 2rem;
-      letter-spacing: 1px;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      line-height: 1.2;
     }
 
     nav {
-      flex: 1;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(540px, 1fr));
-      gap: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 2rem 1rem;
       max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      justify-items: center;
+      margin: 0 auto;
     }
 
+    /* Botones flexibles entre 300×300 y 500×500 */
     .btn {
       position: relative;
-      display: block;
-      width: 520px;
-      height: 520px;
-      border-radius: 8px;
+      flex: 1 1 300px;
+      min-width: 300px;
+      max-width: 500px;
+      width: 100%;
+      aspect-ratio: 1 / 1;
       background-color: #fff;
       background-position: center;
       background-repeat: no-repeat;
       background-size: contain;
-      border: 4px solid rgba(0, 0, 0, 0.1);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      border: 4px solid rgba(0,0,0,0.1);
+      border-radius: 8px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+      text-decoration: none;
       overflow: hidden;
-      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    }
+    .btn:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.16);
+      border-color: rgba(0,0,0,0.2);
     }
 
-    /* Etiqueta oculta y luego visible */
     .btn .label {
       position: absolute;
-      bottom: 10px;
+      bottom: .75rem;
       left: 50%;
       transform: translateX(-50%) translateY(20px);
       background: rgba(255,255,255,0.9);
-      padding: 6px 12px;
+      padding: .5rem 1rem;
       border-radius: 4px;
-      font-size: 1.8rem;    /* 50% más grande que 1.2rem */
+      font-size: 1.8rem;
       color: #222;
       opacity: 0;
-      transition: opacity 0.3s, transform 0.3s;
+      transition: opacity .3s ease, transform .3s ease;
       pointer-events: none;
     }
-
     .btn:hover .label {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
 
-    .btn:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-      border-color: rgba(0, 0, 0, 0.2);
-    }
-
-    /* Imágenes de fondo */
+    /* Imágenes de cada botón */
     #transistor   { background-image: url('images/transistor.png'); }
     #diodo        { background-image: url('images/diodo.png'); }
     #led          { background-image: url('images/led.png'); }
@@ -102,52 +122,60 @@
     #resistencias:hover { background-image: url('images/resistencias-symbol.png'); }
 
     footer {
-      background-color: #1a1a2e;
+      background: #1a1a2e;
       color: #fff;
       text-align: center;
       padding: 1rem;
-      font-size: 0.9rem;
+      font-size: .9rem;
     }
-
     footer a {
       color: #66fcf1;
       text-decoration: none;
     }
-
     footer a:hover {
       text-decoration: underline;
+    }
+
+    /* En pantallas muy pequeñas, cada botón ocupa toda la fila */
+    @media (max-width: 300px) {
+      .btn {
+        flex: 0 0 100%;
+        min-width: 100%;
+      }
     }
   </style>
 </head>
 <body>
+
   <header>
     <h1>Calcula electrónica con Angelmicelti</h1>
   </header>
 
   <nav>
-    <a href="Transistor.html"   class="btn" id="transistor"   target="_blank" rel="noopener">
+    <a href="Transistor.html"   id="transistor"   class="btn" target="_blank" rel="noopener">
       <span class="label">Transistor</span>
     </a>
-    <a href="Diodo.html"        class="btn" id="diodo"        target="_blank" rel="noopener">
+    <a href="Diodo.html"        id="diodo"        class="btn" target="_blank" rel="noopener">
       <span class="label">Diodo</span>
     </a>
-    <a href="Led.html"          class="btn" id="led"          target="_blank" rel="noopener">
+    <a href="Led.html"          id="led"          class="btn" target="_blank" rel="noopener">
       <span class="label">LED</span>
     </a>
-    <a href="Condensador.html"  class="btn" id="condensador"  target="_blank" rel="noopener">
+    <a href="Condensador.html"  id="condensador"  class="btn" target="_blank" rel="noopener">
       <span class="label">Condensador</span>
     </a>
-    <a href="Resistencias.html" class="btn" id="resistencias" target="_blank" rel="noopener">
+    <a href="Resistencias.html" id="resistencias" class="btn" target="_blank" rel="noopener">
       <span class="label">Resistencias</span>
     </a>
   </nav>
 
   <footer>
-    Visita mi sitio principal en
+    Visita mi web principal en
     <a href="https://angelmicelti.github.io" target="_blank" rel="noopener">
       angelmicelti.github.io
     </a>
   </footer>
+
 </body>
 </html>
 ```
