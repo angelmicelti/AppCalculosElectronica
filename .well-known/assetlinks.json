@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "io.github.angelmicelti.twa",
+    "sha256_cert_fingerprints": ["18:90:89:7C:71:5D:69:BE:C2:92:01:CA:18:DB:08:6B:F7:C7:20:CA:3F:46:C2:E2:EA:02:C9:E6:2C:2A:EB:5F"]
+  }
+}]
