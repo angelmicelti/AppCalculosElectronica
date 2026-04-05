@@ -11,6 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
   <![endif]-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     /* Reset global */
@@ -144,28 +145,110 @@
         min-width: 100%;
       }
     }
+
+    /* Estilos Navegación Universal */
+    .universal-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(26, 26, 46, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .nav-content {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: #66fcf1;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #66fcf1;
+      background: rgba(102, 252, 241, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+      .nav-logo span { display: none; }
+      .nav-links { gap: 0.25rem; }
+      .nav-links a { padding: 0.4rem 0.3rem; font-size: 0.75rem; }
+    }
+    @media (max-width: 480px) {
+      .nav-links a { font-size: 0.7rem; }
+    }
+
+    body {
+      padding-top: 60px;
+    }
   </style>
 </head>
 <body>
+  <nav class="universal-nav">
+    <div class="nav-content">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-microchip"></i>
+        <span>Electrónica</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="active"><i class="fas fa-home"></i></a>
+        <a href="Transistor.html">Transistores</a>
+        <a href="Diodo.html">Diodos</a>
+        <a href="Led.html">LEDs</a>
+        <a href="Condensador.html">Condensadores</a>
+        <a href="Resistencias.html">Resistencias</a>
+      </div>
+    </div>
+  </nav>
 
   <header>
     <h1>Calcula electrónica con Angelmicelti</h1>
   </header>
 
   <nav>
-    <a href="Transistor.html"   id="transistor"   class="btn" target="_blank" rel="noopener">
+    <a href="Transistor.html"   id="transistor"   class="btn" rel="noopener">
       <span class="label">Transistor</span>
     </a>
-    <a href="Diodo.html"        id="diodo"        class="btn" target="_blank" rel="noopener">
+    <a href="Diodo.html"        id="diodo"        class="btn" rel="noopener">
       <span class="label">Diodo</span>
     </a>
-    <a href="Led.html"          id="led"          class="btn" target="_blank" rel="noopener">
+    <a href="Led.html"          id="led"          class="btn" rel="noopener">
       <span class="label">LED</span>
     </a>
-    <a href="Condensador.html"  id="condensador"  class="btn" target="_blank" rel="noopener">
+    <a href="Condensador.html"  id="condensador"  class="btn" rel="noopener">
       <span class="label">Condensador</span>
     </a>
-    <a href="Resistencias.html" id="resistencias" class="btn" target="_blank" rel="noopener">
+    <a href="Resistencias.html" id="resistencias" class="btn" rel="noopener">
       <span class="label">Resistencias</span>
     </a>
   </nav>
