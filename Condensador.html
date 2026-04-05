@@ -8,7 +8,70 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        .universal-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        .nav-content {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: #66fcf1 !important;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.25rem;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: #66fcf1 !important;
+            background: rgba(102, 252, 241, 0.1);
+        }
+        @media (max-width: 768px) {
+            .nav-logo span { display: none; }
+            .nav-links { gap: 0.25rem; }
+            .nav-links a { padding: 0.4rem 0.3rem; font-size: 0.75rem; }
+        }
+        @media (max-width: 480px) {
+            .nav-links a { font-size: 0.7rem; }
+        }
+        body {
+            padding-top: 80px !important;
+        }
         body {
             font-family: 'Inter', sans-serif;
         }
@@ -26,7 +89,23 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 flex items-center justify-center min-h-screen p-4">
+<body class="bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center min-h-screen p-4">
+    <nav class="universal-nav">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-microchip"></i>
+                <span>Electrónica</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i></a>
+                <a href="Transistor.html">Transistores</a>
+                <a href="Diodo.html">Diodos</a>
+                <a href="Led.html">LEDs</a>
+                <a href="Condensador.html" class="active">Condensadores</a>
+                <a href="Resistencias.html">Resistencias</a>
+            </div>
+        </div>
+    </nav>
 
     <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white text-center mb-6">Calculadora de Condensadores</h1>
