@@ -1,4 +1,4 @@
-const CACHE_NAME = 'v2_cache_electronica_angelmicelti';
+const CACHE_NAME = 'v3_cache_electronica_angelmicelti';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
