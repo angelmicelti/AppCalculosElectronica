@@ -380,7 +380,7 @@
         <div id="result-estrella-triangulo" class="mt-6 p-5 result-card rounded-lg min-h-[5rem] flex flex-col items-center justify-center">
           <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Convertir".</p>
         </div>
-        <button id="btn-export-estrella" class="btn-export w-full">
+        <button id="btn-export-estrella" class="btn-export w-full hidden-element">
           <i class="fas fa-download mr-2"></i>Exportar a archivo de texto
         </button>
       </div>
@@ -413,7 +413,7 @@
         <div id="result-triangulo-estrella" class="mt-6 p-5 result-card rounded-lg min-h-[5rem] flex flex-col items-center justify-center">
           <p class="text-gray-500 dark:text-gray-400">Introduce los valores y pulsa "Convertir".</p>
         </div>
-        <button id="btn-export-triangulo" class="btn-export w-full">
+        <button id="btn-export-triangulo" class="btn-export w-full hidden-element">
           <i class="fas fa-download mr-2"></i>Exportar a archivo de texto
         </button>
       </div>
@@ -554,7 +554,7 @@
             html += `<div class="formula-box text-left">
                        <p class="font-medium mb-2 text-gray-800 dark:text-gray-200">Pasos:</p>
                        ${pasos.map((p,i)=>`<p>${i+1}. ${p}</p>`).join('')}
-                       <p class="mt-2">Serie final: ${ser.join('Ω + ')}Ω = ${total.toFixed(2)}Ω</p>
+                       <p class="mt-2">Serie final: ${ser.map(v => Number(v.toFixed(2))).join('Ω + ')}Ω = ${total.toFixed(2)}Ω</p>
                      </div>`;
           }
           html += `</div>`;
@@ -573,6 +573,89 @@
         pasos.forEach((p,i)=> txt+= `${i+1}. ${p}\n`);
         txt += `\nFecha: ${new Date().toLocaleString()}`;
         exportToText('mixto.txt', txt);
+      });
+
+      // --- ESTRELLA → TRIÁNGULO (Teorema de Kennelly) ---
+      document.getElementById('btn-estrella-triangulo').addEventListener('click', () => {
+        const r1 = parseFloat(document.getElementById('r1-estrella').value);
+        const r2 = parseFloat(document.getElementById('r2-estrella').value);
+        const r3 = parseFloat(document.getElementById('r3-estrella').value);
+        const resEl = document.getElementById('result-estrella-triangulo');
+        const btnExport = document.getElementById('btn-export-estrella');
+        if (isNaN(r1) || isNaN(r2) || isNaN(r3) || r1 <= 0 || r2 <= 0 || r3 <= 0) {
+          resEl.innerHTML = '<p class="text-red-500 font-semibold">Introduce valores válidos (mayores que 0).</p>';
+          btnExport.classList.add('hidden-element');
+          return;
+        }
+        // Cada lado del triángulo es la rama de la estrella opuesta a él
+        const ra = r2 + r3 + (r2 * r3) / r1; // lado derecho (entre los terminales de R2 y R3)
+        const rb = r1 + r3 + (r1 * r3) / r2; // lado izquierdo (entre los terminales de R1 y R3)
+        const rc = r1 + r2 + (r1 * r2) / r3; // lado superior (entre los terminales de R1 y R2)
+        resEl.innerHTML = `
+          <div class="text-center">
+            <p class="font-bold text-lg text-amber-700 dark:text-amber-300">Resistencias del Triángulo (Δ)</p>
+            <div class="mt-3 space-y-2 font-semibold text-gray-800 dark:text-gray-200">
+              <p>Ra (lado derecho): <span class="result-value">${ra.toFixed(2)} Ω</span></p>
+              <p>Rb (lado izquierdo): <span class="result-value">${rb.toFixed(2)} Ω</span></p>
+              <p>Rc (lado superior): <span class="result-value">${rc.toFixed(2)} Ω</span></p>
+            </div>
+            <div class="formula-box text-left">
+              <p class="font-medium mb-2 text-gray-800 dark:text-gray-200">Fórmulas aplicadas:</p>
+              <p>Ra = R2 + R3 + (R2·R3)/R1 = ${ra.toFixed(2)}Ω</p>
+              <p>Rb = R1 + R3 + (R1·R3)/R2 = ${rb.toFixed(2)}Ω</p>
+              <p>Rc = R1 + R2 + (R1·R2)/R3 = ${rc.toFixed(2)}Ω</p>
+            </div>
+          </div>`;
+        window.lastEstrella = { r1, r2, r3, ra, rb, rc };
+        btnExport.classList.remove('hidden-element');
+      });
+      document.getElementById('btn-export-estrella').addEventListener('click', () => {
+        if (!window.lastEstrella) return alert('Calcula primero');
+        const { r1, r2, r3, ra, rb, rc } = window.lastEstrella;
+        const txt = `Conversión Estrella → Triángulo\n\nEstrella (Ω): R1=${r1}, R2=${r2}, R3=${r3}\nTriángulo (Ω): Ra=${ra.toFixed(2)}, Rb=${rb.toFixed(2)}, Rc=${rc.toFixed(2)}\nFecha: ${new Date().toLocaleString()}`;
+        exportToText('estrella-triangulo.txt', txt);
+      });
+
+      // --- TRIÁNGULO → ESTRELLA (Teorema de Kennelly) ---
+      document.getElementById('btn-triangulo-estrella').addEventListener('click', () => {
+        const ra = parseFloat(document.getElementById('ra-triangulo').value);
+        const rb = parseFloat(document.getElementById('rb-triangulo').value);
+        const rc = parseFloat(document.getElementById('rc-triangulo').value);
+        const resEl = document.getElementById('result-triangulo-estrella');
+        const btnExport = document.getElementById('btn-export-triangulo');
+        if (isNaN(ra) || isNaN(rb) || isNaN(rc) || ra <= 0 || rb <= 0 || rc <= 0) {
+          resEl.innerHTML = '<p class="text-red-500 font-semibold">Introduce valores válidos (mayores que 0).</p>';
+          btnExport.classList.add('hidden-element');
+          return;
+        }
+        const suma = ra + rb + rc;
+        // Cada rama de la estrella usa los dos lados adyacentes a su terminal
+        const r1 = (rb * rc) / suma; // rama opuesta a Ra
+        const r2 = (ra * rc) / suma; // rama opuesta a Rb
+        const r3 = (ra * rb) / suma; // rama opuesta a Rc
+        resEl.innerHTML = `
+          <div class="text-center">
+            <p class="font-bold text-lg text-amber-700 dark:text-amber-300">Resistencias de la Estrella (Y)</p>
+            <div class="mt-3 space-y-2 font-semibold text-gray-800 dark:text-gray-200">
+              <p>R1 (opuesta a Ra): <span class="result-value">${r1.toFixed(2)} Ω</span></p>
+              <p>R2 (opuesta a Rb): <span class="result-value">${r2.toFixed(2)} Ω</span></p>
+              <p>R3 (opuesta a Rc): <span class="result-value">${r3.toFixed(2)} Ω</span></p>
+            </div>
+            <div class="formula-box text-left">
+              <p class="font-medium mb-2 text-gray-800 dark:text-gray-200">Fórmulas aplicadas (Σ = Ra + Rb + Rc = ${suma.toFixed(2)}Ω):</p>
+              <p>R1 = (Rb·Rc)/Σ = ${r1.toFixed(2)}Ω</p>
+              <p>R2 = (Ra·Rc)/Σ = ${r2.toFixed(2)}Ω</p>
+              <p>R3 = (Ra·Rb)/Σ = ${r3.toFixed(2)}Ω</p>
+            </div>
+          </div>`;
+        window.lastTriangulo = { ra, rb, rc, r1, r2, r3 };
+        btnExport.classList.remove('hidden-element');
+      });
+      document.getElementById('btn-export-triangulo').addEventListener('click', () => {
+        if (!window.lastTriangulo) return alert('Calcula primero');
+        const { ra, rb, rc, r1, r2, r3 } = window.lastTriangulo;
+        const txt = `Conversión Triángulo → Estrella\n\nTriángulo (Ω): Ra=${ra}, Rb=${rb}, Rc=${rc}\nEstrella (Ω): R1=${r1.toFixed(2)}, R2=${r2.toFixed(2)}, R3=${r3.toFixed(2)}\nFecha: ${new Date().toLocaleString()}`;
+        exportToText('triangulo-estrella.txt', txt);
       });
     });
   </script>
